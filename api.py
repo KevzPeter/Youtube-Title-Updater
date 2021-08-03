@@ -42,23 +42,24 @@ for item in response['items']:
 response['items']=newDict
 Views=str(response['items']['statistics']['viewCount'])
 
-if Views[-1]=='1':
-    Views=Views+"st"
-elif Views[-1]=='2':
-    Views=Views+"nd"
-elif Views[-1]=='3':
-    Views=Views+"rd"
-else:
-    Views=Views+"th"
+def make_ordinal(n):
+    n = int(n)
+    suffix = ['th', 'st', 'nd', 'rd', 'th'][min(n % 10, 4)]
+    if 11 <= (n % 100) <= 13:
+        suffix = 'th'
+    return str(n) + suffix
+
+ordinalViews=make_ordinal(Views)
+
 request2 = youtube.videos().update(
         part="snippet,status,localizations",
         body={
           "id": "PASTE VIDEO ID HERE",
           "snippet": {
-            "categoryId": '27',
+            "categoryId": "Your category ID",
             "description":"Your Description",
             "tags": ['Your tags here'],
-            "title": "You are the "+Views+" person to click on this video!"
+            "title": "You are the "+ordinalViews+" person to click on this video!"
           }
         }
     )
